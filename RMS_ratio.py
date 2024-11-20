@@ -84,6 +84,11 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     cbar_bright = fig.colorbar(scatter_dark, ax=axs[0, 0], orientation='vertical', fraction=0.046, pad=0.04)
 
     bins = 50000  # Adjust bins as necessary for better visibility
+    print(f'The mean ratio for bright is: {np.median(rms_ratio_bright)}')
+    print(f'The mean ratio for dark is: {np.median(rms_ratio_dark)}')
+    # Add mean lines to the histograms
+    axs[1, 0].axvline(x=np.median(rms_ratio_bright), color='red', linestyle='--', label='Mean (Bright)')
+    axs[1, 1].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Mean (Dark)')
 
     axs[1, 0].hist(rms_ratio_bright, bins=bins)
     axs[1, 0].set_xlabel('CCD / CMOS RMS Ratio')
