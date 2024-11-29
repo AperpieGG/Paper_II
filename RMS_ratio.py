@@ -63,7 +63,7 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     tmag_dark, rms_ratio_dark, color_dark = compute_rms_ratios(data_ccd_dark, data_cmos_dark)
 
     # First row: scatter plots for bright and dark nights
-    scatter_bright = axs[0, 0].scatter(tmag_bright, rms_ratio_bright, c=color_bright, cmap='coolwarm', vmin=0.5, vmax=1.5)
+    scatter_bright = axs[0, 0].scatter(tmag_dark, rms_ratio_dark, c=color_bright, cmap='coolwarm', vmin=0.5, vmax=1.5)
     axs[0, 0].axhline(y=1, color='black', linestyle='--')
     axs[0, 0].invert_xaxis()
     axs[0, 0].set_ylim(0, 2)
@@ -71,7 +71,7 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[0, 0].set_xlabel('Tmag')
     axs[0, 0].set_ylabel('CCD / CMOS RMS Ratio')
 
-    scatter_dark = axs[0, 1].scatter(tmag_dark, rms_ratio_dark, c=color_dark, cmap='coolwarm', vmin=0.5, vmax=1.5)
+    scatter_dark = axs[0, 1].scatter(tmag_bright, rms_ratio_bright, c=color_dark, cmap='coolwarm', vmin=0.5, vmax=1.5)
     axs[0, 1].axhline(y=1, color='black', linestyle='--')
     axs[0, 1].invert_xaxis()
     axs[0, 1].set_ylim(0, 2)
@@ -87,23 +87,23 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     print(f'The mean ratio for bright is: {np.median(rms_ratio_bright)}')
     print(f'The mean ratio for dark is: {np.median(rms_ratio_dark)}')
     # Add mean lines to the histograms
-    axs[1, 0].axvline(x=np.median(rms_ratio_bright), color='red', linestyle='--', label='Mean (Bright)')
-    axs[1, 1].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Mean (Dark)')
+    axs[1, 0].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Mean (Bright)')
+    axs[1, 1].axvline(x=np.median(rms_ratio_bright), color='red', linestyle='--', label='Mean (Dark)')
 
-    axs[1, 0].hist(rms_ratio_bright, bins=bins)
+    axs[1, 0].hist(rms_ratio_dark, bins=bins)
     axs[1, 0].set_xlabel('CCD / CMOS RMS Ratio')
     axs[1, 0].set_ylabel('Frequency')
     axs[1, 0].axvline(x=1, color='black', linestyle='--')
     axs[1, 0].set_xlim(0, 2)
     axs[1, 0].set_yscale('log')
-    axs[1, 0].set_ylim(0, 500)
+    # axs[1, 0].set_ylim(0, 500)
 
-    axs[1, 1].hist(rms_ratio_dark, bins=bins)
+    axs[1, 1].hist(rms_ratio_bright, bins=bins)
     axs[1, 1].set_xlabel('CCD / CMOS RMS Ratio')
     axs[1, 1].axvline(x=1, color='black', linestyle='--')
     axs[1, 1].set_xlim(0, 2)
     axs[1, 1].set_yscale('log')
-    axs[1, 1].set_ylim(0, 500)
+    # axs[1, 1].set_ylim(0, 500)
 
     plt.tight_layout()
     plt.savefig('RMS_Ratio.pdf', dpi=300)
