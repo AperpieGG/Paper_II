@@ -83,27 +83,40 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     cbar_dark.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     cbar_bright = fig.colorbar(scatter_dark, ax=axs[0, 0], orientation='vertical', fraction=0.046, pad=0.04)
 
-    bins = 50000  # Adjust bins as necessary for better visibility
-    print(f'The mean ratio for bright is: {np.median(rms_ratio_bright)}')
-    print(f'The mean ratio for dark is: {np.median(rms_ratio_dark)}')
-    # Add mean lines to the histograms
-    axs[1, 0].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Mean (Bright)')
-    axs[1, 1].axvline(x=np.median(rms_ratio_bright), color='red', linestyle='--', label='Mean (Dark)')
+    # Second row: h
+    # istograms with mapped colors
+    bins = np.linspace(0, 2, 100)
+    hist_dark, bin_edges_dark = np.histogram(rms_ratio_dark, bins=bins)
+    hist_bright, bin_edges_bright = np.histogram(rms_ratio_bright, bins=bins)
 
-    axs[1, 0].hist(rms_ratio_dark, bins=bins)
+    # Get the bin centers
+    bin_centers_dark = 0.5 * (bin_edges_dark[:-1] + bin_edges_dark[1:])
+    bin_centers_bright = 0.5 * (bin_edges_bright[:-1] + bin_edges_bright[1:])
+
+    # Normalize color values for mapping
+    norm = plt.Normalize(vmin=0.5, vmax=1.5)
+    cmap = plt.cm.coolwarm
+
+    # Plot histogram for dark night
+    for count, center, value in zip(hist_dark, bin_centers_dark, color_dark):
+        axs[1, 0].bar(center, count, color=cmap(norm(value)), width=bin_edges_dark[1] - bin_edges_dark[0])
+
     axs[1, 0].set_xlabel('CCD / CMOS RMS Ratio')
     axs[1, 0].set_ylabel('Frequency')
-    axs[1, 0].axvline(x=1, color='black', linestyle='--')
+    # axs[1, 0].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Median')
+    axs[1, 0].axvline(x=1, color='black', linestyle='--', linewidth=2)
     axs[1, 0].set_xlim(0, 2)
     axs[1, 0].set_yscale('log')
-    # axs[1, 0].set_ylim(0, 500)
 
-    axs[1, 1].hist(rms_ratio_bright, bins=bins)
+    # Plot histogram for bright night
+    for count, center, value in zip(hist_bright, bin_centers_bright, color_bright):
+        axs[1, 1].bar(center, count, color=cmap(norm(value)), width=bin_edges_bright[1] - bin_edges_bright[0])
+
     axs[1, 1].set_xlabel('CCD / CMOS RMS Ratio')
-    axs[1, 1].axvline(x=1, color='black', linestyle='--')
+    # axs[1, 1].axvline(x=np.median(rms_ratio_bright), color='green', linestyle='--', label='Median')
+    axs[1, 1].axvline(x=1, color='black', linestyle='--', linewidth=2)
     axs[1, 1].set_xlim(0, 2)
     axs[1, 1].set_yscale('log')
-    # axs[1, 1].set_ylim(0, 500)
 
     plt.tight_layout()
     plt.savefig('RMS_Ratio.pdf', dpi=300)
