@@ -24,7 +24,7 @@ def load_rms_mags_data():
     return data_list
 
 
-def plot_noise_model(ax, data):
+def plot_noise_model(ax, data, label):
     """
     Plot RMS noise model on a given axis.
     """
@@ -63,6 +63,13 @@ def plot_noise_model(ax, data):
     ax.set_xlim(7.5, 14)
     ax.set_ylim(1000, 100000)
     ax.invert_xaxis()
+
+    # Add the label in the bottom-left corner
+    ax.text(
+        0.02, 0.03, label, transform=ax.transAxes,
+        fontsize=12, fontweight='bold', ha='left', va='bottom',
+        bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+    )
     # ax.xaxis.set_major_locator(MultipleLocator(2))  # Set x-axis ticks to step by 2
     return scatter
 
@@ -76,13 +83,16 @@ def main():
     # Create a figure with 2 rows and 2 columns of subplots
     fig, axes = plt.subplots(2, 2, sharey=True, constrained_layout=True, figsize=(12, 8))
 
+    # Labels for the subplots
+    labels = ["CCD", "CMOS", "CCD", "CMOS"]
+
     # Plot RMS noise models for all datasets
     scatters = []
     for i, ax in enumerate(axes.flat):
-        scatter = plot_noise_model(ax, data_list[i])
+        scatter = plot_noise_model(ax, data_list[i], labels[i])
         if i in [0, 2]:  # Set the shared y-axis label only on the first column
             ax.set_ylabel('RMS (ppm)')
-        if i in [2, 3]:
+        if i in [2, 3]:  # Set the shared x-axis label only on the last row
             ax.set_xlabel('TESS Magnitude')
         scatters.append(scatter)
 
