@@ -67,7 +67,7 @@ def main():
     plt.figure(figsize=(8, 4))
     # Set vmin and vmax in the scatter call
     scatter = plt.scatter(
-        temperatures, flux_ratios, c=colors, cmap='hot', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5)
+        temperatures, flux_ratios, c=colors, cmap='coolwarm', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5)
 
     # Add colorbar without vmin and vmax
     plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
