@@ -2,6 +2,8 @@
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
+from astropy.stats import sigma_clip
 from plot_images import plot_images
 
 plot_images()
@@ -56,27 +58,40 @@ def main():
     tmags = np.array(tmags)
     colors = np.array(colors)
 
-    # # Apply the Tmag < 12.5 filter
-    # mask = tmags < 14
-    # temperatures = temperatures[mask]
-    # flux_ratios = flux_ratios[mask]
-    # tmags = tmags[mask]
+    # Perform sigma clipping
+    for i in range(3):  # Perform 3 iterations of sigma clipping
+        clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
+        temperatures = temperatures[~clipped_indices]
+        flux_ratios = flux_ratios[~clipped_indices]
+        tmags = tmags[~clipped_indices]
+        colors = colors[~clipped_indices]
+
+    # Fit a linear regression
+    slope, intercept, r_value, p_value, std_err = linregress(temperatures, flux_ratios)
+    print(f"Linear Fit: Slope = {slope:.5f}, Intercept = {intercept:.5f}")
+
+    # Generate the fitted line
+    fitted_line = slope * temperatures + intercept
 
     # Plotting
     print("Creating the plot...")
     plt.figure(figsize=(8, 4))
-    # Set vmin and vmax in the scatter call
-    scatter = plt.scatter(
-        temperatures, flux_ratios, c=colors, cmap='coolwarm', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5)
 
-    # Add colorbar without vmin and vmax
+    # Scatter plot with temperatures and flux ratios
+    scatter = plt.scatter(
+        temperatures, flux_ratios, c=colors, cmap='coolwarm', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5
+    )
+
+    # Add the fitted line
+    plt.plot(temperatures, fitted_line, color='black', linestyle='--', label='Linear Fit')
+
+    # Add colorbar
     plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
-    # plt.colorbar(scatter, label='TESS Magnitude')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    # plt.ylim(0.8, 1.5)
     plt.ylim(0.4, 1.2)
     plt.xlim(3000, 7500)
+    plt.legend()
     plt.tight_layout()
     plt.show()
 
