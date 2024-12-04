@@ -1,5 +1,5 @@
 .idea
 .DS_Store
-goto_filters.csv
+files/goto_filters.csv
 __pycache__/
 files/
