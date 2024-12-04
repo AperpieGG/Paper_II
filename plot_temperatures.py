@@ -17,8 +17,8 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    cmos_file = 'flux_vs_temperature_CMOS.json'
-    ccd_file = 'flux_vs_temperature_CCD.json'
+    cmos_file = 'sky_flux_vs_temperature_CMOS_0705.json'
+    ccd_file = 'sky_flux_vs_temperature_CCD_0705.json'
 
     print(f"Loading CMOS data from {cmos_file}...")
     cmos_data = load_json(cmos_file)
@@ -56,22 +56,22 @@ def main():
     tmags = np.array(tmags)
     colors = np.array(colors)
 
-    # Apply the Tmag < 12.5 filter
-    mask = tmags < 14
-    temperatures = temperatures[mask]
-    flux_ratios = flux_ratios[mask]
-    tmags = tmags[mask]
+    # # Apply the Tmag < 12.5 filter
+    # mask = tmags < 14
+    # temperatures = temperatures[mask]
+    # flux_ratios = flux_ratios[mask]
+    # tmags = tmags[mask]
 
     # Plotting
     print("Creating the plot...")
     plt.figure(figsize=(8, 4))
     # Set vmin and vmax in the scatter call
     scatter = plt.scatter(
-        temperatures, flux_ratios, c=tmags, cmap='hot', edgecolor='k', alpha=1)
+        temperatures, flux_ratios, c=colors, cmap='hot', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5)
 
     # Add colorbar without vmin and vmax
-    # plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
-    plt.colorbar(scatter, label='TESS Magnitude')
+    plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
+    # plt.colorbar(scatter, label='TESS Magnitude')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
     # plt.ylim(0.8, 1.5)
