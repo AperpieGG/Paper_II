@@ -12,7 +12,7 @@ def load_rms_mags_data():
     """
     Load RMS and magnitude data from JSON file.
     """
-    filename_1 = 'files/rms_vs_mag_comps_0715.json'
+    filename_1 = 'files/rms_vs_mag_comps.json'
     with open(filename_1, 'r') as file:
         data = json.load(file)
 
@@ -33,8 +33,9 @@ def plot_noise_model(data):
     plt.scatter(bad_mags, bad_rms, color='red')
     plt.xlabel('TESS Magnitude')
     plt.ylabel('RMS (ppm)')
-    plt.ylim(0.01 * 1e6, 0.06 * 1e6)  # Set y-axis limit based on dimmest good star RMS
-
+    plt.yscale('log')
+    plt.ylim(5000, 200000)  # Set y-axis limit based on dimmest good star RMS
+    plt.xlim(11, 13.5)
     plt.gca().invert_xaxis()
     plt.ylim()
     # plt.title('RMS vs. Magnitude of Comparison Stars')
