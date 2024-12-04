@@ -9,17 +9,19 @@ from plot_images import plot_images
 
 def load_rms_mags_data():
     """
-    Load RMS and magnitude data from JSON file.
+    Load RMS and magnitude data from JSON files.
     """
-    filename_1 = 'rms_mags_rel_phot_NG2320-1302_4_1_0705.json'
-    filename_2 = 'rms_mags_rel_phot_NG2320-1302_5_1_0705.json'
-    with open(filename_1, 'r') as file:
-        data_1 = json.load(file)
-
-    with open(filename_2, 'r') as file:
-        data_2 = json.load(file)
-
-    return data_1, data_2
+    filenames = [
+        'files/rms_mags_rel_phot_NG2320-1302_4_1_0705.json',
+        'files/rms_mags_rel_phot_NG2320-1302_5_1_0705.json',
+        'files/rms_mags_rel_phot_NG2320-1302_4_1_0622.json',
+        'files/rms_mags_rel_phot_NG2320-1302_5_1_0622.json'
+    ]
+    data_list = []
+    for filename in filenames:
+        with open(filename, 'r') as file:
+            data_list.append(json.load(file))
+    return data_list
 
 
 def plot_noise_model(ax, data):
@@ -57,12 +59,11 @@ def plot_noise_model(ax, data):
     ax.plot(synthetic_mag, sky_noise, color='blue', label='sky bkg', linestyle='--')
     ax.plot(synthetic_mag, np.ones(len(synthetic_mag)) * N, color='orange', label='scintillation noise', linestyle='--')
 
-    ax.set_xlabel('TESS Magnitude')
     ax.set_yscale('log')
     ax.set_xlim(7.5, 14)
     ax.set_ylim(1000, 100000)
     ax.invert_xaxis()
-    ax.xaxis.set_major_locator(MultipleLocator(2))  # Set x-axis ticks to step by 1
+    # ax.xaxis.set_major_locator(MultipleLocator(2))  # Set x-axis ticks to step by 2
     return scatter
 
 
@@ -70,22 +71,27 @@ def main():
     # Set plot parameters
     plot_images()
     # Load RMS and magnitude data from JSON files
-    data_1, data_2 = load_rms_mags_data()
+    data_list = load_rms_mags_data()
 
-    # Create a figure with two subplots (1 row, 2 columns) with shared y-axis
-    fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, constrained_layout=True)
+    # Create a figure with 2 rows and 2 columns of subplots
+    fig, axes = plt.subplots(2, 2, sharey=True, constrained_layout=True, figsize=(12, 8))
 
-    # Plot RMS noise models for both datasets
-    scatter1 = plot_noise_model(ax1, data_1)
-    scatter2 = plot_noise_model(ax2, data_2)
+    # Plot RMS noise models for all datasets
+    scatters = []
+    for i, ax in enumerate(axes.flat):
+        scatter = plot_noise_model(ax, data_list[i])
+        if i in [0, 2]:  # Set the shared y-axis label only on the first column
+            ax.set_ylabel('RMS (ppm)')
+        if i in [2, 3]:
+            ax.set_xlabel('TESS Magnitude')
+        scatters.append(scatter)
 
-    # Set the shared y-axis label only on the first plot
-    ax1.set_ylabel('RMS (ppm)')
-
-    # Create a single colorbar for both plots
-    cbar = fig.colorbar(scatter1, ax=[ax1, ax2], orientation='vertical')
+    # Create a single colorbar for the entire figure
+    cbar = fig.colorbar(scatters[0], ax=axes, orientation='vertical', fraction=0.1, pad=0.05)
     cbar.set_label(label='$\mathdefault{G_{BP}-G_{RP}}$')
-    plt.savefig('Noise_Dark.pdf', dpi=300)
+
+    # Save and show the plot
+    plt.savefig('Noise_NEW_FULL.pdf', dpi=300)
     plt.show()
 
 
