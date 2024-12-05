@@ -24,18 +24,18 @@ plot_images()
 def process_camera(cam, target):
     # Set up the transit parameters
     params = batman.TransitParams()
-    params.t0 = 2456338.44251  # time of inferior conjunction (BJD)
-    params.per = 2.1846730  # orbital period (days)
-    params.rp = 0.1024  # planet radius (in units of stellar radii)
-    params.a = 6.47  # semi-major axis (in units of stellar radii)
-    params.inc = 88.4  # orbital inclination (degrees)
-    params.ecc = 0  # eccentricity
+    params.t0 = 2454823.58592  # time of inferior conjunction (BJD)
+    params.per = 1.338231602  # orbital period (days)
+    params.rp = 0.155241747  # planet radius (in units of stellar radii)
+    params.a = 5.451  # semi-major axis (in units of stellar radii)
+    params.inc = 88.39  # orbital inclination (degrees)
+    params.ecc = 0.0053  # eccentricity
     params.w = 0  # longitude of periastron (degrees)
-    params.u = [0.4412, 0.2312]  # limb darkening coefficients [u1, u2]
+    params.u = [0.4451, 0.2297]  # limb darkening coefficients [u1, u2]
     params.limb_dark = "quadratic"  # limb darkening model
 
     # Load data from JSON file
-    with open(f'target_light_curve_{target}_{cam}.json', 'r') as json_file:
+    with open(f'files/target_light_curve_{target}_{cam}.json', 'r') as json_file:
         data = json.load(json_file)
 
     tic_id = data['TIC_ID']
@@ -48,7 +48,7 @@ def process_camera(cam, target):
 
     # Calculate mean of normalised data
     mean_dt_flux = np.mean(flux_binned)
-    adjustment = mean_dt_flux - (0.9948 if cam2 == 'CMOS' else 9948)
+    adjustment = mean_dt_flux - 0.9948
 
     # Adjust flux
     dt_flux_adjusted = flux_binned - adjustment
@@ -114,27 +114,29 @@ def bin_time_flux_error(time, flux, error, bin_fact):
  fluxerr_binned2, model_flux2) = process_camera(cam2, target)
 
 # Plotting
-fig, axes = plt.subplots(1, 2, figsize=(8, 4), dpi=100, sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(12, 4), dpi=100, sharey=True, constrained_layout=False)
 plt.subplots_adjust(wspace=0)  # Remove space between plots
+
+# First subplot
 axes[0].plot(time1, flux_adjusted1, '.', label=f"{cam1} Unbinned", color="grey", alpha=0.5)
 axes[0].plot(time_binned1, dt_flux_adjusted1, 'o', label=f"{cam1} 5 min bin", color="red")
 axes[0].plot(time_binned1, model_flux1, label=f"{cam1} Transit Model", color="black", linestyle='-')
 axes[0].set_xlabel("Time (BJD)")
 axes[0].set_ylabel("Relative flux")
-axes[0].set_ylim(0.98, 1.01)
-axes[0].set_xlim(2460506.62, 2460506.92)
-# axes[0].legend()
-axes[0].set_title(f"{cam1} Data")
+axes[0].set_ylim(0.96, 1.03)
+axes[0].set_xlim(2460525.62, 2460525.92)
 
+# Second subplot
 axes[1].plot(time2, flux_adjusted2, '.', label=f"{cam2} Unbinned", color="grey", alpha=0.5)
 axes[1].plot(time_binned2, dt_flux_adjusted2, 'o', label=f"{cam2} 5 min bin", color="red")
 axes[1].plot(time_binned2, model_flux2, label=f"{cam2} Transit Model", color="black", linestyle='-')
 axes[1].set_xlabel("Time (BJD)")
-axes[1].set_ylim(0.98, 1.01)
-axes[1].set_xlim(2460506.62, 2460506.92)
+axes[1].set_ylim(0.96, 1.03)
+axes[1].set_xlim(2460525.62, 2460525.92)
 
-# axes[1].legend()
-axes[1].set_title(f"{cam2} Data")
+# Add constrained layout without interfering with wspace
+# fig.tight_layout(rect=[0, 0, 1, 1])  # Adjust to leave space for axis labels
 
-# Adjust layout and show
+# Save and show
+plt.savefig(f'comparison_lc_{target}.pdf', dpi=300)
 plt.show()
