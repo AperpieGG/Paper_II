@@ -8,7 +8,7 @@ from plot_images import plot_images
 plot_images()
 
 # Load the CSV file with headers on the second line
-file_path = '/Users/u5500483/Documents/GitHub/Paper_II/goto_filters.csv'  # Replace with the actual file path
+file_path = '/files/goto_filters.csv'  # Replace with the actual file path
 data = pd.read_csv(file_path, header=1)
 print(data.head())
 
