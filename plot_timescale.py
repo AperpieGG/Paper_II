@@ -1,58 +1,85 @@
+#!/usr/bin/env python
 import json
-import os
 from matplotlib import pyplot as plt, ticker
 from plot_images import plot_images
 
 plot_images()
 
 
-def load_rms_mags_data():
+# Load the JSON data
+def load_json(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+
+def extract_data(file_path):
     """
-    Load RMS and magnitude data from JSON file.
+    Extract times, RMS values, and models for both CMOS and CCD.
     """
-    filename_1 = 'files/rms_vs_timescale_0714.json'
-    with open(filename_1, 'r') as file:
-        data = json.load(file)
+    data = load_json(file_path)
 
-    return data
+    # Extract data for CMOS
+    times_CMOS = data['file1']['times']
+    avg_rms_CMOS = data['file1']['avg_rms']
+    RMS_model_CMOS = data['file1']['rms_model']
+
+    # Extract data for CCD
+    times_CCD = data['file2']['times']
+    avg_rms_CCD = data['file2']['avg_rms']
+    RMS_model_CCD = data['file2']['rms_model']
+
+    return times_CMOS, avg_rms_CMOS, RMS_model_CMOS, times_CCD, avg_rms_CCD, RMS_model_CCD
 
 
-def plot_rms_timescale(data):
-    """
-    Plot RMS noise model on a given axis.
-    """
-    times1 = data['file1']['times']
-    avg_rms1 = data['file1']['avg_rms']
-    RMS_model1 = data['file1']['rms_model']
+def main():
+    # File paths
+    file_paths = [
+        'rms_vs_time_0705_10-11.json',
+        'rms_vs_time_0705_11-12.json',
+        'rms_vs_time_0705_12-13.json',
+        'rms_vs_time_0705_13-14.json',
+    ]
+    labels = [r"$10<\mathrm{T_{mag}}<11$", r"$11<\mathrm{T_{mag}}<12$",
+              r"$12<\mathrm{T_{mag}}<13$", r"$13<\mathrm{T_{mag}}<14$"]
 
-    times2 = data['file2']['times']
-    avg_rms2 = data['file2']['avg_rms']
-    RMS_model2 = data['file2']['rms_model']
+    # Create a single figure with 1 row and 4 columns
+    fig, axes = plt.subplots(1, 4, figsize=(12, 8), sharey=True, constrained_layout=True)
 
-    fig, axs = plt.subplots(1, 2, figsize=(6, 6), sharey=True)
+    for i, file_path in enumerate(file_paths):
+        times_CMOS, avg_rms_CMOS, RMS_model_CMOS, times_CCD, avg_rms_CCD, RMS_model_CCD = extract_data(file_path)
 
-    axs[0].plot(times1, avg_rms1, 'o', color='black')
-    axs[0].plot(times1, RMS_model1, '--', color='black')
-    axs[0].axvline(x=900, color='red', linestyle='-')
-    axs[0].set_xscale('log')
-    axs[0].set_yscale('log')
-    axs[0].set_xlabel('Exposure time (s)')
-    axs[0].set_ylabel('RMS (ppm)')
+        # Plot for CMOS
+        axes[i].plot(times_CMOS, avg_rms_CMOS, 'o', color='blue', label='CMOS Data')
+        axes[i].plot(times_CMOS, RMS_model_CMOS, '--', color='blue', label='CMOS Model')
 
-    axs[1].plot(times2, avg_rms2, 'o', color='black')
-    axs[1].plot(times2, RMS_model2, '--', color='black')
-    axs[1].axvline(x=900, color='red', linestyle='-')
-    axs[1].set_xscale('log')
-    axs[1].set_xlabel('Exposure time (s)')
+        # Plot for CCD
+        axes[i].plot(times_CCD, avg_rms_CCD, 'o', color='red', label='CCD Data')
+        axes[i].plot(times_CCD, RMS_model_CCD, '--', color='red', label='CCD Model')
 
-    plt.gca().yaxis.set_major_formatter(ticker.ScalarFormatter(useMathText=False))
-    plt.gca().yaxis.set_minor_formatter(ticker.ScalarFormatter(useMathText=False))
-    plt.gca().tick_params(axis='y', which='minor', length=4)
-    plt.tight_layout()
-    plt.savefig('rms_vs_timescale.pdf', dpi=300)
+        # Add a text box in the top right corner
+        axes[i].text(
+            0.95, 0.98, labels[i], transform=axes[i].transAxes,
+            fontsize=12, verticalalignment='top', horizontalalignment='right',
+            bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+        )
+
+        # Set logarithmic scales
+        axes[i].set_xscale('log')
+        axes[i].set_yscale('log')
+
+        axes[i].set_xlabel('Exposure Time (s)')
+        if i == 0:
+            axes[i].set_ylabel('RMS (ppm)')
+
+        # Format the y-axis tick labels
+        axes[i].yaxis.set_major_formatter(ticker.ScalarFormatter(useMathText=False))
+        axes[i].yaxis.set_minor_formatter(ticker.ScalarFormatter(useMathText=False))
+        axes[i].tick_params(axis='y', which='minor', length=4)
+
+    # Save and show the plot
+    plt.savefig('RMS_vs_Time.pdf', dpi=300)
     plt.show()
 
 
 if __name__ == "__main__":
-    data = load_rms_mags_data()
-    plot_rms_timescale(data)
+    main()
