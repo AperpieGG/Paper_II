@@ -2,7 +2,6 @@
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import linregress
 from astropy.stats import sigma_clip
 from plot_images import plot_images
 
@@ -19,8 +18,8 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    cmos_file = 'sky_flux_vs_temperature_CMOS_0705.json'
-    ccd_file = 'sky_flux_vs_temperature_CCD_0705.json'
+    cmos_file = 'flux_vs_temperature_CMOS_0705.json'
+    ccd_file = 'flux_vs_temperature_CCD_0705.json'
 
     print(f"Loading CMOS data from {cmos_file}...")
     cmos_data = load_json(cmos_file)
@@ -59,19 +58,22 @@ def main():
     colors = np.array(colors)
 
     # Perform sigma clipping
-    for i in range(3):  # Perform 3 iterations of sigma clipping
+    for i in range(5):  # Perform 3 iterations of sigma clipping
         clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
         temperatures = temperatures[~clipped_indices]
         flux_ratios = flux_ratios[~clipped_indices]
         tmags = tmags[~clipped_indices]
         colors = colors[~clipped_indices]
 
-    # Fit a linear regression
-    slope, intercept, r_value, p_value, std_err = linregress(temperatures, flux_ratios)
-    print(f"Linear Fit: Slope = {slope:.5f}, Intercept = {intercept:.5f}")
+    # Fit a degree-4 polynomial
+    polynomial_coeffs = np.polyfit(temperatures, flux_ratios, 4)
+    polynomial_fit = np.poly1d(polynomial_coeffs)
+    fitted_values = polynomial_fit(temperatures)
 
-    # Generate the fitted line
-    fitted_line = slope * temperatures + intercept
+    # Print the polynomial function in readable form
+    poly_terms = [f"{coeff:.3e}x^{i}" for i, coeff in enumerate(polynomial_coeffs[::-1])]
+    poly_function = " + ".join(poly_terms)
+    print(f"Fitted Polynomial Function: f(x) = {poly_function}")
 
     # Plotting
     print("Creating the plot...")
@@ -82,14 +84,20 @@ def main():
         temperatures, flux_ratios, c=colors, cmap='coolwarm', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5
     )
 
-    # Add the fitted line
-    plt.plot(temperatures, fitted_line, color='black', linestyle='--', label='Linear Fit')
+    # Add the polynomial fit
+    plt.plot(
+        np.sort(temperatures),
+        polynomial_fit(np.sort(temperatures)),
+        color='black',
+        linestyle='--',
+        label='Polynomial Fit (Degree 4)'
+    )
 
     # Add colorbar
     plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    plt.ylim(0.4, 1.2)
+    plt.ylim(0.9, 1.4)
     plt.xlim(3000, 7500)
     plt.legend()
     plt.tight_layout()
