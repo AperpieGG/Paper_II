@@ -40,6 +40,14 @@ def main():
         if tic_id in ccd_dict:
             ccd_entry = ccd_dict[tic_id]
 
+            # Exclude stars with Tmag > 12.5
+            if cmos_entry["Tmag"] > 12:
+                continue
+
+            # Exclude stars with color > 8000
+            if cmos_entry["Teff"] > 8000:
+                continue
+
             # Calculate the flux ratio
             cmos_flux = cmos_entry["Converted_Flux"]
             ccd_flux = ccd_entry["Converted_Flux"]
@@ -58,12 +66,12 @@ def main():
     colors = np.array(colors)
 
     # Perform sigma clipping
-    for i in range(5):  # Perform 3 iterations of sigma clipping
-        clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
-        temperatures = temperatures[~clipped_indices]
-        flux_ratios = flux_ratios[~clipped_indices]
-        tmags = tmags[~clipped_indices]
-        colors = colors[~clipped_indices]
+    # for i in range(3):  # Perform 3 iterations of sigma clipping
+    #     clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
+    #     temperatures = temperatures[~clipped_indices]
+    #     flux_ratios = flux_ratios[~clipped_indices]
+    #     tmags = tmags[~clipped_indices]
+    #     colors = colors[~clipped_indices]
 
     # Fit a degree-4 polynomial
     polynomial_coeffs = np.polyfit(temperatures, flux_ratios, 4)
@@ -77,12 +85,11 @@ def main():
 
     # Plotting
     print("Creating the plot...")
-    plt.figure(figsize=(8, 4))
+    plt.figure()
 
     # Scatter plot with temperatures and flux ratios
     scatter = plt.scatter(
-        temperatures, flux_ratios, c=colors, cmap='coolwarm', edgecolor='k', alpha=1, vmin=0.5, vmax=1.5
-    )
+        temperatures, flux_ratios, c=tmags, cmap='hot_r', edgecolor='k', alpha=1)
 
     # Add the polynomial fit
     plt.plot(
@@ -94,13 +101,14 @@ def main():
     )
 
     # Add colorbar
-    plt.colorbar(scatter, label=r'$\mathrm{G_{BP} - G_{RP}}$')
+    cbar = plt.colorbar(scatter, label=r'$\mathdefault{T_{mag}}$')
+    # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    plt.ylim(0.9, 1.4)
-    plt.xlim(3000, 7500)
-    plt.legend()
+    plt.ylim(0.8, 1.6)
+    # plt.ylim(0.4, 0.9)
     plt.tight_layout()
+    plt.savefig('ratio_flux_0705.pdf', dpi=300)
     plt.show()
 
 
