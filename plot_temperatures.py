@@ -21,6 +21,9 @@ def main():
     cmos_file = 'flux_vs_temperature_CMOS_0705.json'
     ccd_file = 'flux_vs_temperature_CCD_0705.json'
 
+    cmos_file_sky = 'sky_flux_vs_temperature_CMOS_0705'
+    ccd_file_sky = 'sky_flux_vs_temperature_CCD_0705.json'
+
     print(f"Loading CMOS data from {cmos_file}...")
     cmos_data = load_json(cmos_file)
     print(f"Loading CCD data from {ccd_file}...")
@@ -91,22 +94,22 @@ def main():
     scatter = plt.scatter(
         temperatures, flux_ratios, c=tmags, cmap='hot_r', edgecolor='k', alpha=1)
 
-    # Add the polynomial fit
-    plt.plot(
-        np.sort(temperatures),
-        polynomial_fit(np.sort(temperatures)),
-        color='black',
-        linestyle='--',
-        label='Polynomial Fit (Degree 4)'
-    )
+    # # Add the polynomial fit
+    # plt.plot(
+    #     np.sort(temperatures),
+    #     polynomial_fit(np.sort(temperatures)),
+    #     color='black',
+    #     linestyle='--',
+    #     label='Polynomial Fit (Degree 4)'
+    # )
 
     # Add colorbar
     cbar = plt.colorbar(scatter, label=r'$\mathdefault{T_{mag}}$')
     # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    plt.ylim(0.8, 1.6)
-    # plt.ylim(0.4, 0.9)
+    # plt.ylim(0.8, 1.6)
+    plt.ylim(0.51, 1.75)
     plt.tight_layout()
     plt.savefig('ratio_flux_0705.pdf', dpi=300)
     plt.show()
