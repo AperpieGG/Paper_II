@@ -39,7 +39,7 @@ def main():
         'rms_vs_time_0705_12-13.json',
         'rms_vs_time_0705_13-14.json',
     ]
-    labels = [r"$10<\mathrm{T_{mag}}<11$", r"$11<\mathrm{T_{mag}}<12$",
+    labels = [r"$\mathdefault{10<\mathrm{T_{mag}}<11}$", r"$11<\mathrm{T_{mag}}<12$",
               r"$12<\mathrm{T_{mag}}<13$", r"$13<\mathrm{T_{mag}}<14$"]
 
     # Create a single figure with 1 row and 4 columns

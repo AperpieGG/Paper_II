@@ -68,7 +68,7 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[0, 0].invert_xaxis()
     axs[0, 0].set_ylim(0, 2)
     axs[0, 0].set_xlim(14.1, 9)
-    axs[0, 0].set_xlabel('Tmag')
+    axs[0, 0].set_xlabel('TESS Magnitude')
     axs[0, 0].set_ylabel('CCD / CMOS RMS Ratio')
 
     scatter_dark = axs[0, 1].scatter(tmag_bright, rms_ratio_bright, c=color_dark, cmap='coolwarm', vmin=0.5, vmax=1.5)
@@ -76,7 +76,7 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[0, 1].invert_xaxis()
     axs[0, 1].set_ylim(0, 2)
     axs[0, 1].set_xlim(14.1, 9)
-    axs[0, 1].set_xlabel('Tmag')
+    axs[0, 1].set_xlabel('TESS Magnitude')
 
     # Add colorbars
     cbar_dark = fig.colorbar(scatter_dark, ax=axs[0, 1], orientation='vertical', fraction=0.046, pad=0.04)

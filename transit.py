@@ -124,7 +124,12 @@ axes[0].plot(time_binned1, model_flux1, label=f"{cam1} Transit Model", color="bl
 axes[0].set_xlabel("Time (BJD)")
 axes[0].set_ylabel("Relative flux")
 axes[0].set_ylim(0.96, 1.03)
-axes[0].set_xlim(2460525.62, 2460525.92)
+axes[0].set_xlim(2460525.64, 2460525.92)
+axes[0].text(
+    0.03, 0.05, "CMOS", transform=axes[0].transAxes,
+    fontsize=12, verticalalignment='bottom', horizontalalignment='left',
+    bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+)
 
 # Second subplot
 axes[1].plot(time2, flux_adjusted2, '.', label=f"{cam2} Unbinned", color="grey", alpha=0.5)
@@ -132,10 +137,12 @@ axes[1].plot(time_binned2, dt_flux_adjusted2, 'o', label=f"{cam2} 5 min bin", co
 axes[1].plot(time_binned2, model_flux2, label=f"{cam2} Transit Model", color="black", linestyle='-')
 axes[1].set_xlabel("Time (BJD)")
 axes[1].set_ylim(0.96, 1.03)
-axes[1].set_xlim(2460525.62, 2460525.92)
-
-# Add constrained layout without interfering with wspace
-# fig.tight_layout(rect=[0, 0, 1, 1])  # Adjust to leave space for axis labels
+axes[1].set_xlim(2460525.64, 2460525.92)
+axes[1].text(
+    0.03, 0.05, "CCD", transform=axes[1].transAxes,
+    fontsize=12, verticalalignment='bottom', horizontalalignment='left',
+    bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+)
 
 # Save and show
 plt.savefig(f'comparison_lc_{target}.pdf', dpi=300)
