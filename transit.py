@@ -46,6 +46,10 @@ def process_camera(cam, target):
     # Bin the data
     time_binned, flux_binned, fluxerr_binned = bin_time_flux_error(time, flux, flux_err, 30)
 
+    print(f'The maximum value is: {np.max(flux_binned)} ')
+    print(f'The minimum value is: {np.min(flux_binned)}')
+    print(f'The transit depth is : {(np.max(flux_binned) - np.min(flux_binned)) * 1000000}')
+
     # Calculate mean of normalised data
     mean_dt_flux = np.mean(flux_binned)
     adjustment = mean_dt_flux - 0.9948
