@@ -30,18 +30,24 @@ def process_camera(cam, target):
     params.a = 5.451  # semi-major axis (in units of stellar radii)
     params.inc = 88.39  # orbital inclination (degrees)
     params.ecc = 0.0053  # eccentricity
-    params.w = 0  # longitude of periastron (degrees)
+    params.w = 288  # longitude of periastron (degrees)
     params.u = [0.4451, 0.2297]  # limb darkening coefficients [u1, u2]
     params.limb_dark = "quadratic"  # limb darkening model
 
     # Load data from JSON file
-    with open(f'files/target_light_curve_{target}_{cam}.json', 'r') as json_file:
+    with open(f'data_transit/target_light_curve_{target}_{cam}_0802.json', 'r') as json_file:
         data = json.load(json_file)
 
-    tic_id = data['TIC_ID']
+    # Extract data
     time = np.array(data['Time_BJD'])
     flux = np.array(data['Relative_Flux'])
     flux_err = np.array(data['Relative_Flux_err'])
+
+    # # Exclude last 300 points only for the first camera
+    # if cam == cam1:
+    #     time = time[:-500]
+    #     flux = flux[:-500]
+    #     flux_err = flux_err[:-500]
 
     # Bin the data
     time_binned, flux_binned, fluxerr_binned = bin_time_flux_error(time, flux, flux_err, 30)
@@ -128,7 +134,7 @@ axes[0].plot(time_binned1, model_flux1, label=f"{cam1} Transit Model", color="bl
 axes[0].set_xlabel("Time (BJD)")
 axes[0].set_ylabel("Relative flux")
 axes[0].set_ylim(0.96, 1.03)
-axes[0].set_xlim(2460525.64, 2460525.92)
+# axes[0].set_xlim(2460551 .591, 2460551.84)
 axes[0].text(
     0.03, 0.05, "CMOS", transform=axes[0].transAxes,
     fontsize=12, verticalalignment='bottom', horizontalalignment='left',
@@ -141,7 +147,7 @@ axes[1].plot(time_binned2, dt_flux_adjusted2, 'o', label=f"{cam2} 5 min bin", co
 axes[1].plot(time_binned2, model_flux2, label=f"{cam2} Transit Model", color="black", linestyle='-')
 axes[1].set_xlabel("Time (BJD)")
 axes[1].set_ylim(0.96, 1.03)
-axes[1].set_xlim(2460525.64, 2460525.92)
+# axes[1].set_xlim(2460551.591, 2460551.84)
 axes[1].text(
     0.03, 0.05, "CCD", transform=axes[1].transAxes,
     fontsize=12, verticalalignment='bottom', horizontalalignment='left',
