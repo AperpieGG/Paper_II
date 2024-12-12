@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import ZScaleInterval
 from matplotlib.patches import Circle, FancyArrow
 from matplotlib.colors import LogNorm
-from utils import plot_images
+from plot_images import plot_images
 from matplotlib import ticker
 
 
@@ -17,7 +17,7 @@ def read_image(filename, subtract_value, multiply_value):
     Read and preprocess an image from a FITS file.
     """
     with fits.open(filename) as hdul:
-        image = hdul[0].data
+        image = hdul[0].data.astype(float)
         print(f'Mean pixel value: {np.mean(image)}')
         preprocessed_image = ((image - subtract_value) * multiply_value) / 10
         print(f'Preprocessed mean pixel value: {np.mean(preprocessed_image)}')
@@ -50,7 +50,7 @@ def find_position():
     return x_cmos, y_cmos, x_ccd, y_ccd
 
 
-def plot_image(ax, image_data, x, y, title, aperture, radius=15, origin_setting='lower', show_compass=False):
+def plot_image(ax, image_data, x, y, title, aperture, radius=15.5, origin_setting='lower', show_compass=False):
     """
     Plot an image with specified parameters and overlay aperture and annulus.
     """
@@ -79,7 +79,7 @@ def plot_image(ax, image_data, x, y, title, aperture, radius=15, origin_setting=
 
     # Add compass for the second image
     if show_compass:
-        add_compass(ax, x + radius - 2, y - radius +2)
+        add_compass(ax, x + radius - 2, y - radius + 2)
 
     return im
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     # Create colorbar matching the size of the images
     cbar = fig.colorbar(im_cmos, ax=axs.ravel().tolist(), orientation='vertical', fraction=0.021, pad=0.04)
-    # cbar.set_label("Pixel value (e$^-$/s)")
+    cbar.set_label("Pixel value (e$^-$/s)")
 
     # Customizing the colorbar labels in ke/s
     cbar.set_label("Pixel value (e$^-$/s)")
