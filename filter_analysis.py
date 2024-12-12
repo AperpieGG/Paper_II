@@ -6,9 +6,9 @@ from plot_images import plot_images
 
 
 plot_images()
-
+path = '/Users/u5500483/Documents/GitHub/Paper_II/files/'
 # Load the CSV file with headers on the second line
-file_path = '/files/goto_filters.csv'  # Replace with the actual file path
+file_path = path + 'goto_filters.csv'  # Replace with the actual file path
 data = pd.read_csv(file_path, header=1)
 print(data.head())
 
@@ -68,18 +68,25 @@ plt.figure()
 # plt.plot(wavelength_sloan_r, sloan_r_transmission, label="sloan_r %T", color="red")
 # plt.plot(wavelength_bessel_i, bessel_i_transmission, label="bessel_i %T", color="darkred")
 
-plt.plot(wv_cmos, qe_cmos, label="QE_CMOS", color="red")
-plt.plot(wv_ccd, qe_ccd, label="QE_CCD", color="blue")
-plt.plot(wv_ngts, ngts_tra, label="NGTS_TRA", color="orange")
-plt.plot(wv_tel, tel_tra, label="TEL_TRA", color="green")
+plt.plot(wv_cmos, qe_cmos, label="sCMOS", color="blue")
+plt.plot(wv_ccd, qe_ccd, label="CCD", color="red", linestyle="--")
+plt.fill_between(wv_ngts, 0, 100, where=(ngts_tra > 90), color="grey", alpha=0.5)
+# plt.plot(wv_tel, tel_tra, label="TEL_TRA", color="green")
+
+# Add inline labels
+# plt.text(460, 80, "Marana sCMOS", color="blue", fontsize=14, fontweight="bold")
+# plt.text(750, 80, "I-kon L CCD", color="red", fontsize=14, fontweight="bold")
+
 
 # Add labels and title
 plt.xlabel("Wavelength (nm)")
-plt.ylabel("% Transmission / Quantum Efficiency")
+plt.ylabel("Quantum Efficiency %")
 plt.ylim(0, 100)
-plt.xlim(379, 1000)
-# plt.legend()
+plt.xlim(400, 1000)
 plt.grid(True)
+plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=2, frameon=False, fontsize=12)
+
 
 # Show the plot
+plt.savefig('filter_analysis.pdf', dpi=300)
 plt.show()
