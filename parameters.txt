@@ -1,0 +1,132 @@
+#WASP-4b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2454823.58592  # time of inferior conjunction (BJD)
+    params.per = 1.338231602  # orbital period (days)
+    params.rp = 0.155241747  # planet radius (in units of stellar radii)
+    params.a = 5.451  # semi-major axis (in units of stellar radii)
+    params.inc = 88.39  # orbital inclination (degrees)
+    params.ecc = 0.0053  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.4451, 0.2297]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.9948
+
+axes[0].set_ylim(0.96, 1.03)
+axes[0].set_xlim(2460525.62, 2460525.92)
+
+#WASP-97b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2458554.472352  # time of inferior conjunction (BJD)
+    params.per = 2.07275965  # orbital period (days)
+    params.rp = 0.109  # planet radius (in units of stellar radii)
+    params.a =  6.59  # semi-major axis (in units of stellar radii)
+    params.inc = 88  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.4412, 0.2312]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.995
+
+axes[0].set_ylim(0.96, 1.03)
+axes[1].set_xlim(2460527.69, 2460527.84)
+axes[1].set_xlim(2460529.70, 2460529.90)
+
+
+#KELT-10b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2457612.49947  # time of inferior conjunction (BJD)
+    params.per = 4.1662541  # orbital period (days)
+    params.rp = 0.1190  # planet radius (in units of stellar radii)
+    params.a = 9.34  # semi-major axis (in units of stellar radii)
+    params.inc = 88.61  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.4408, 0.2584]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.995
+
+axes[0].set_ylim(0.96, 1.03)
+axes[1].set_xlim(2460524.55, 2460524.72)
+
+
+#TOI-2109b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2459378.456370  # time of inferior conjunction (BJD)
+    params.per = 0.672474140  # orbital period (days)
+    params.rp = 0.08155  # planet radius (in units of stellar radii)
+    params.a = 2.268  # semi-major axis (in units of stellar radii)
+    params.inc = 70.74  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.3210, 0.3065]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.9985
+
+axes[0].set_ylim(0.98, 1.02)
+axes[0].set_xlim(2460509.505, 2460509.621)
+
+
+#WASP-95b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2458553.706158  # time of inferior conjunction (BJD)
+    params.per = 2.18466642  # orbital period (days)
+    params.rp = 0.1025  # planet radius (in units of stellar radii)
+    params.a = 6.51  # semi-major axis (in units of stellar radii)
+    params.inc = 88.4  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.4412, 0.2312]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.9965
+
+axes[0].set_ylim(0.97, 1.02)
+axes[0].set_xlim(2460530.73, 2460530.925)
+
+
+#HATS-33b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2458840.27835  # time of inferior conjunction (BJD)
+    params.per = 2.54956317  # orbital period (days)
+    params.rp = 0.140  # planet radius (in units of stellar radii)
+    params.a = 7.83  # semi-major axis (in units of stellar radii)
+    params.inc = 87.6  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.30, 0.3197]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+adjustment = mean_dt_flux - 0.9955
+
+
+#WASP-30b
+def process_camera(cam, target):
+    # Set up the transit parameters
+    params = batman.TransitParams()
+    params.t0 = 2455335.028  # time of inferior conjunction (BJD)
+    params.per = 4.156736  # orbital period (days)
+    params.rp = 0.070  # planet radius (in units of stellar radii)
+    params.a = 8.84  # semi-major axis (in units of stellar radii)
+    params.inc = 89.57  # orbital inclination (degrees)
+    params.ecc = 0  # eccentricity
+    params.w = 0  # longitude of periastron (degrees)
+    params.u = [0.4008, 0.2584]  # limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"  # limb darkening model
+
+
