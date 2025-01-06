@@ -29,7 +29,7 @@ def main(period, duration, T0, target_file, save_option):
     # Apply Wotan flattening with transit masking
     flattened_flux, trend_flux = flatten(
         time_binned, flux_binned, method='cosine',
-        window_length=2 * duration, return_trend=True,
+        window_length=3 * duration, return_trend=True,
         robust=True, mask=mask
     )
 
