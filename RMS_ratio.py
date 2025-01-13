@@ -18,7 +18,8 @@ def load_json_files():
     cmos_file_bright = 'files/rms_mags_rel_phot_NG2320-1302_5_1_0622.json'
     ccd_file_dark = 'files/rms_mags_rel_phot_NG2320-1302_4_1_0705.json'
     cmos_file_dark = 'files/rms_mags_rel_phot_NG2320-1302_5_1_0705.json'
-    with open(ccd_file_bright, 'r') as f1, open(ccd_file_dark, 'r') as f2, open(cmos_file_bright, 'r') as f3, open(cmos_file_dark, 'r') as f4:
+    with open(ccd_file_bright, 'r') as f1, open(ccd_file_dark, 'r') as f2, open(cmos_file_bright, 'r') as f3, open(
+            cmos_file_dark, 'r') as f4:
         data_ccd_bright = json.load(f1)
         data_ccd_dark = json.load(f2)
         data_cmos_bright = json.load(f3)
@@ -71,6 +72,13 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[0, 0].set_xlabel('TESS Magnitude')
     axs[0, 0].set_ylabel('CCD / CMOS RMS Ratio')
 
+    label = "No-moon"
+    axs[0, 0].text(
+        0.78, 0.93, label, transform=axs[0, 0].transAxes,
+        fontsize=15, fontweight='bold', ha='left', va='bottom',
+        bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+    )
+
     scatter_dark = axs[0, 1].scatter(tmag_bright, rms_ratio_bright, c=color_dark, cmap='coolwarm', vmin=0.5, vmax=1.5)
     axs[0, 1].axhline(y=1, color='black', linestyle='--')
     axs[0, 1].invert_xaxis()
@@ -78,29 +86,21 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[0, 1].set_xlim(14.1, 9)
     axs[0, 1].set_xlabel('TESS Magnitude')
 
-    # Add colorbars
-    cbar_dark = fig.colorbar(scatter_dark, ax=axs[0, 1], orientation='vertical', fraction=0.046, pad=0.04)
+    # Add a text label in the scatter plot for bright nights
+    label = "Full-moon"
+    axs[0, 1].text(
+        0.76, 0.93, label, transform=axs[0, 1].transAxes,
+        fontsize=15, fontweight='bold', ha='left', va='bottom',
+        bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+    )
+
+    # Add color-bars
+    cbar_dark = fig.colorbar(scatter_bright, ax=axs[0, 1], orientation='vertical', fraction=0.046, pad=0.04)
     cbar_dark.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     cbar_bright = fig.colorbar(scatter_dark, ax=axs[0, 0], orientation='vertical', fraction=0.046, pad=0.04)
 
     # Second row: h
-    # istograms with mapped colors
-    bins = np.linspace(0, 2, 100)
-    hist_dark, bin_edges_dark = np.histogram(rms_ratio_dark, bins=bins)
-    hist_bright, bin_edges_bright = np.histogram(rms_ratio_bright, bins=bins)
-
-    # Get the bin centers
-    bin_centers_dark = 0.5 * (bin_edges_dark[:-1] + bin_edges_dark[1:])
-    bin_centers_bright = 0.5 * (bin_edges_bright[:-1] + bin_edges_bright[1:])
-
-    # Normalize color values for mapping
-    norm = plt.Normalize(vmin=0.5, vmax=1.5)
-    cmap = plt.cm.coolwarm
-
-    # Plot histogram for dark night
-    for count, center, value in zip(hist_dark, bin_centers_dark, color_dark):
-        axs[1, 0].bar(center, count, color=cmap(norm(value)), width=bin_edges_dark[1] - bin_edges_dark[0])
-
+    axs[1, 0].hist(rms_ratio_dark, bins=50000, color='blue', alpha=0.7)
     axs[1, 0].set_xlabel('CCD / CMOS RMS Ratio')
     axs[1, 0].set_ylabel('Frequency')
     # axs[1, 0].axvline(x=np.median(rms_ratio_dark), color='red', linestyle='--', label='Median')
@@ -108,10 +108,7 @@ def plot_comparison(data_ccd_bright, data_ccd_dark, data_cmos_bright, data_cmos_
     axs[1, 0].set_xlim(0, 2)
     axs[1, 0].set_yscale('log')
 
-    # Plot histogram for bright night
-    for count, center, value in zip(hist_bright, bin_centers_bright, color_bright):
-        axs[1, 1].bar(center, count, color=cmap(norm(value)), width=bin_edges_bright[1] - bin_edges_bright[0])
-
+    axs[1, 1].hist(rms_ratio_bright, bins=50000, color='blue', alpha=0.7)
     axs[1, 1].set_xlabel('CCD / CMOS RMS Ratio')
     # axs[1, 1].axvline(x=np.median(rms_ratio_bright), color='green', linestyle='--', label='Median')
     axs[1, 1].axvline(x=1, color='black', linestyle='--', linewidth=2)

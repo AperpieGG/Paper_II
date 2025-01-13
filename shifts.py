@@ -136,11 +136,11 @@ def plot_shifts(x_shifts, y_shifts, times, save_path, prefix):
 
     Parameters
     ----------
-    x_shifts : list
-        List of X-shift values for each image.
-    y_shifts : list
+    x_shifts :
+        list of X-shift values for each image.
+    y_shifts :
         List of Y-shift values for each image.
-    times : list
+    times :
         List of time values (JD) from image headers.
     save_path : str
         Directory where the plot should be saved.
@@ -148,12 +148,12 @@ def plot_shifts(x_shifts, y_shifts, times, save_path, prefix):
         Prefix to identify the dataset.
     """
     # Plot X and Y shifts as a function of time
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots()
     ax.plot(times, x_shifts, 'r.')
     ax.plot(times, y_shifts, 'b.')
     # Add labels, title, and legend
-    ax.set_xlabel('Time (JD)', fontsize=12)
-    ax.set_ylabel('Shift (pixels)', fontsize=12)
+    ax.set_xlabel('Time (JD)')
+    ax.set_ylabel('Shift (pixels)')
     ax.set_title(f'Shifts vs Time for Field: {prefix}', fontsize=14)
     ax.legend(fontsize=10)
     # Save the plot
@@ -176,7 +176,7 @@ def main():
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     # Use current directory as the data directory
-    current_directory = '.'
+    current_directory = '/Users/u5500483/Downloads/DATA_MAC/CMOS/20240828/'
     if os.path.exists(current_directory):
         print(f"Processing images in: {current_directory}")
         find_first_image_of_each_prefix(current_directory, save_path)
