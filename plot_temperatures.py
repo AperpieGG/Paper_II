@@ -18,11 +18,11 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    cmos_file = 'flux_vs_temperature_CMOS_0705.json'
-    ccd_file = 'flux_vs_temperature_CCD_0705.json'
+    cmos_file = 'files/flux_vs_temperature_CMOS_0705.json'
+    ccd_file = 'files/flux_vs_temperature_CCD_0705.json'
 
-    cmos_file_sky = 'sky_flux_vs_temperature_CMOS_0705'
-    ccd_file_sky = 'sky_flux_vs_temperature_CCD_0705.json'
+    cmos_file_sky = 'files/sky_flux_vs_temperature_CMOS_0705'
+    ccd_file_sky = 'files/sky_flux_vs_temperature_CCD_0705.json'
 
     print(f"Loading CMOS data from {cmos_file}...")
     cmos_data = load_json(cmos_file)
@@ -104,7 +104,7 @@ def main():
     # )
 
     # Add colorbar
-    cbar = plt.colorbar(scatter, label=r'$\mathdefault{T_{mag}}$')
+    cbar = plt.colorbar(scatter, label='TESS Magnitude')
     # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')

@@ -24,9 +24,9 @@ def load_rms_mags_data():
     return data_list
 
 
-def plot_noise_model(ax, data, label):
+def plot_noise_model(ax, data, label, no_moon_label=None, full_moon_label=None):
     """
-    Plot RMS noise model on a given axis.
+    Plot RMS noise model on a given axis, with main and moon phase labels.
     """
     RMS_list = data['RMS_list']
     Tmag_list = data['Tmag_list']
@@ -64,13 +64,27 @@ def plot_noise_model(ax, data, label):
     ax.set_ylim(1000, 100000)
     ax.invert_xaxis()
 
-    # Add the label in the bottom-left corner
+    # Add the main label in the bottom-left corner
     ax.text(
         0.02, 0.03, label, transform=ax.transAxes,
-        fontsize=12, fontweight='bold', ha='left', va='bottom',
+        fontsize=15, fontweight='bold', ha='left', va='bottom',
         bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
     )
-    # ax.xaxis.set_major_locator(MultipleLocator(2))  # Set x-axis ticks to step by 2
+
+    # Add the moon phase label, depending on the input
+    if no_moon_label:
+        ax.text(
+            0.815, 0.08, no_moon_label, transform=ax.transAxes,
+            fontsize=15, fontweight='bold', ha='left', va='top',
+            bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+        )
+    if full_moon_label:
+        ax.text(
+            0.8, 0.08, full_moon_label, transform=ax.transAxes,
+            fontsize=15, fontweight='bold', ha='left', va='top',
+            bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
+        )
+
     return scatter
 
 
@@ -89,7 +103,13 @@ def main():
     # Plot RMS noise models for all datasets
     scatters = []
     for i, ax in enumerate(axes.flat):
-        scatter = plot_noise_model(ax, data_list[i], labels[i])
+        # Determine moon labels based on the subplot's row
+        no_moon_label = 'No-moon' if i < 2 else None
+        full_moon_label = 'Full-moon' if i >= 2 else None
+
+        # Plot the noise model with appropriate labels
+        scatter = plot_noise_model(ax, data_list[i], labels[i], no_moon_label, full_moon_label)
+
         if i in [0, 2]:  # Set the shared y-axis label only on the first column
             ax.set_ylabel('RMS (ppm)')
         if i in [2, 3]:  # Set the shared x-axis label only on the last row

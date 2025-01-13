@@ -17,8 +17,8 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    sky_cmos_file = 'sky_flux_vs_temperature_CMOS_0705.json'
-    sky_ccd_file = 'sky_flux_vs_temperature_CCD_0705.json'
+    sky_cmos_file = 'files/sky_flux_vs_temperature_CMOS_0705.json'
+    sky_ccd_file = 'files/sky_flux_vs_temperature_CCD_0705.json'
 
     print(f"Loading Sky CMOS data from {sky_cmos_file}...")
     sky_cmos_data = load_json(sky_cmos_file)
@@ -50,7 +50,7 @@ def main():
     )
     plt.xlabel(r'Sky background ($\mathdefault{e^{-}s^{-1}\,arcsec^{-2}}$)')
     plt.ylabel('Frequency')
-    plt.xlim(0.5, 2)
+    plt.xlim(0.47, 2)
     plt.tight_layout()
     plt.savefig('sky_flux_histogram_0705.pdf', dpi=300)
     plt.show()

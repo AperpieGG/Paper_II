@@ -3,6 +3,7 @@ import json
 from matplotlib import pyplot as plt, ticker
 from plot_images import plot_images
 
+plt.rc('font', family='Times New Roman')
 plot_images()
 
 
@@ -34,13 +35,13 @@ def extract_data(file_path):
 def main():
     # File paths
     file_paths = [
-        'rms_vs_time_0705_10-11.json',
-        'rms_vs_time_0705_11-12.json',
-        'rms_vs_time_0705_12-13.json',
-        'rms_vs_time_0705_13-14.json',
+        'files/rms_vs_time_0705_10-11.json',
+        'files/rms_vs_time_0705_11-12.json',
+        'files/rms_vs_time_0705_12-13.json',
+        'files/rms_vs_time_0705_13-14.json',
     ]
-    labels = [r"$\mathdefault{10<\mathrm{T_{mag}}<11}$", r"$11<\mathrm{T_{mag}}<12$",
-              r"$12<\mathrm{T_{mag}}<13$", r"$13<\mathrm{T_{mag}}<14$"]
+    labels = [r"$\mathdefault{10<\mathdefault{T}<11}$", r"$\mathdefault{11<\mathdefault{T}<12}$",
+              r"$\mathdefault{12<\mathdefault{T}<13}$", r"$\mathdefault{13<\mathdefault{T}<14}$"]
 
     # Create a single figure with 1 row and 4 columns
     fig, axes = plt.subplots(1, 4, figsize=(12, 8), sharey=True, constrained_layout=True)
@@ -59,7 +60,7 @@ def main():
         # Add a text box in the top right corner
         axes[i].text(
             0.95, 0.98, labels[i], transform=axes[i].transAxes,
-            fontsize=12, verticalalignment='top', horizontalalignment='right',
+            fontsize=15, verticalalignment='top', horizontalalignment='right',
             bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3')
         )
 
