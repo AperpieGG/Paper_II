@@ -84,3 +84,50 @@ def load_json(file_path):
     """
     with open(file_path, 'r') as file:
         return json.load(file)
+
+
+def bin_by_time_interval(time, flux, error, interval_minutes=5):
+    """
+    Bin data dynamically based on a specified time interval.
+
+    Parameters
+    ----------
+    time :
+        Array of time values.
+    flux :
+        Array of flux values corresponding to the time array.
+    error :
+        Array of error values corresponding to the flux array.
+    interval_minutes : int, optional
+        Time interval for binning in minutes (default is 5).
+
+    Returns
+    -------
+    binned_time : array
+        Binned time values (averages within each bin).
+    binned_flux : array
+        Binned flux values (averages within each bin).
+    binned_error : array
+        Binned error values (propagated within each bin).
+    """
+    interval_days = interval_minutes / (24 * 60)  # Convert minutes to days
+    binned_time, binned_flux, binned_error = [], [], []
+
+    start_idx = 0
+    while start_idx < len(time):
+        # Find the end index where the time difference exceeds the interval
+        end_idx = start_idx
+        while end_idx < len(time) and (time[end_idx] - time[start_idx]) < interval_days:
+            end_idx += 1
+
+        # Bin the data in the current interval
+        binned_time.append(np.mean(time[start_idx:end_idx]))
+        binned_flux.append(np.mean(flux[start_idx:end_idx]))
+        binned_error.append(
+            np.sqrt(np.sum(error[start_idx:end_idx] ** 2)) / (end_idx - start_idx)
+        )
+
+        # Move to the next interval
+        start_idx = end_idx
+
+    return np.array(binned_time), np.array(binned_flux), np.array(binned_error)
