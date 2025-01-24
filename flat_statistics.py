@@ -2,7 +2,7 @@ from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import distance_transform_edt
-from utils import plot_images
+from plot_images import plot_images
 
 plot_images()
 
@@ -46,9 +46,10 @@ def perform_statistics(radial_profile):
 
 
 # Paths to your FITS files
-file_path1 = 'master_flat_L.fits'
-file_path2 = 'master_flat_NGTS.fits'
-file_path3 = 'master_flat_g.fits'
+path = '/Users/u5500483/Downloads/DATA_MAC/CMOS/flats/'
+file_path1 = path + 'master_flat_L.fits'
+file_path2 = path + 'master_flat_NGTS.fits'
+file_path3 = path + 'master_flat_g.fits'
 
 # Load FITS files
 image1 = load_fits_image(file_path1)
@@ -78,4 +79,6 @@ plt.xlabel('Distance from Centre (pixels)')
 plt.ylabel('Normalised Brightness')
 plt.title('Vignetting Profiles for Three Filters')
 plt.legend()
+path_save = '/Users/u5500483/Downloads/'
+plt.savefig(path_save + 'vignetting_profiles.pdf', dpi=300)
 plt.show()
