@@ -5,3 +5,4 @@ __pycache__/
 files/
 allesfitter/
 maths.py
+stellar_params.dat
