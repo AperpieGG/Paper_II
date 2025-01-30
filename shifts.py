@@ -148,14 +148,26 @@ def plot_shifts(x_shifts, y_shifts, times, save_path, prefix):
         Prefix to identify the dataset.
     """
     # Plot X and Y shifts as a function of time
-    fig, ax = plt.subplots()
-    ax.plot(times, x_shifts, 'r.')
-    ax.plot(times, y_shifts, 'b.')
-    # Add labels, title, and legend
-    ax.set_xlabel('Time (JD)')
-    ax.set_ylabel('Shift (pixels)')
-    ax.set_title(f'Shifts vs Time for Field: {prefix}', fontsize=14)
-    ax.legend(fontsize=10)
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Remove a constant from the time values
+    time = [t - 2460551 for t in times]
+    scatter = ax.scatter(x_shifts, y_shifts, c=time, cmap='viridis',
+                         label='Shifts for field: {}'.format(prefix), marker='o')
+    plt.xlabel('X Shift (pixels)')
+    plt.ylabel('Y Shift (pixels)')
+    plt.title('Shifts to ref image')
+    plt.axhline(0, color='black', linestyle='-', linewidth=1)  # Add horizontal line at y=0
+    plt.axvline(0, color='black', linestyle='-', linewidth=1)  # Add vertical line at x=0
+    plt.legend()
+
+    # Set the axes limits to center (0, 0)
+    plt.xlim(-1, 1)
+    plt.ylim(-1, 1)
+
+    # Add colorbar
+    cbar = plt.colorbar(scatter, label='Time')
+
     # Save the plot
     pdf_file_path = os.path.join(save_path, f"{prefix}_shifts.pdf")
     fig.savefig(pdf_file_path, bbox_inches='tight')
