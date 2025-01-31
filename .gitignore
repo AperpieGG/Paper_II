@@ -3,6 +3,6 @@
 files/goto_filters.csv
 __pycache__/
 files/
-allesfitter/
+allesfit/
 maths.py
 stellar_params.dat
