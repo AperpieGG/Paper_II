@@ -18,8 +18,9 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    cmos_file = 'files/flux_vs_temperature_CMOS_0705.json'
-    ccd_file = 'files/flux_vs_temperature_CCD_0705.json'
+    path = '/Users/u5500483/Downloads/WASP-18/'
+    cmos_file = path + '20240915_CMOS/flux_vs_temperature_CMOS_0915.json'
+    ccd_file = path + '20240915_CCD/action383446_observeField/flux_vs_temperature_CCD_0915.json'
 
     cmos_file_sky = 'files/sky_flux_vs_temperature_CMOS_0705'
     ccd_file_sky = 'files/sky_flux_vs_temperature_CCD_0705.json'
@@ -111,7 +112,8 @@ def main():
     # plt.ylim(0.8, 1.6)
     plt.ylim(0.51, 1.75)
     plt.tight_layout()
-    plt.savefig('ratio_flux_0705.pdf', dpi=300)
+    save_path = '/Users/u5500483/Downloads/'
+    plt.savefig(save_path + 'ratio_flux_0915.pdf', dpi=300)
     plt.show()
 
 
