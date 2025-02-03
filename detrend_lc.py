@@ -60,7 +60,7 @@ def main(period, duration, T0, target_file, save_option):
 
     # Save the detrended light curve to a CSV file if requested
     if save_option.lower() == 'yes':
-        output_file_path = 'allesfitter/NGTS.csv'
+        output_file_path = 'allesfit/NGTS.csv'
         detrended_lc_df = pd.DataFrame({
             '# time': time_binned,
             'flux': flux_binned,
