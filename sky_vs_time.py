@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 import numpy as np
 import os
-import argparse
 import matplotlib.pyplot as plt
 from astropy.io import fits
-from plot_images import plot_images
+from scipy.interpolate import interp1d
+
+from plot_images import plot_images, bin_time_flux_error
 
 plot_images()
 
@@ -13,17 +14,17 @@ def get_phot_files():
     """
     Get photometry files for CMOS and CCD.
     """
-    path_CMOS = '/Users/u5500483/OneDrive - University of Warwick/DATA/WASP-18/20240915_CMOS/'
-    path_CCD = '/Users/u5500483/OneDrive - University of Warwick/DATA/WASP-18/20240915_CCD/action383446_observeField'
+    path_CMOS = '/Users/u5500483/Downloads/'
+    path_CCD = '/Users/u5500483/Downloads/'
 
     phot_files = {"CMOS": None, "CCD": None}
 
     for filename in os.listdir(path_CMOS):
-        if filename.startswith('phot') and filename.endswith('.fits'):
+        if filename.startswith('phot') and filename.endswith('CMOS.fits'):
             phot_files["CMOS"] = os.path.join(path_CMOS, filename)
 
     for filename in os.listdir(path_CCD):
-        if filename.startswith('phot') and filename.endswith('.fits'):
+        if filename.startswith('phot') and filename.endswith('CCD.fits'):
             phot_files["CCD"] = os.path.join(path_CCD, filename)
 
     return phot_files
@@ -58,13 +59,7 @@ def extract_sky_background(phot_file, tic_id, aperture, gain, exposure, area):
 
 
 def main():
-    # parser = argparse.ArgumentParser(description='Extract and overplot sky background for a specific TIC_ID.')
-    # parser.add_argument('--tic_id', type=int, required=True, help='TIC_ID target to extract sky background')
-    #
-    # args = parser.parse_args()
-    # target_tic_id = args.tic_id
-
-    target_tic_id = 100100827
+    target_tic_id = 214662790
 
     # Get photometry files
     phot_files = get_phot_files()
@@ -72,13 +67,14 @@ def main():
     print(f"CCD file: {phot_files['CCD']}")
 
     # Set parameters
-    CMOS_PARAMS = {"aperture": 5, "gain": 1.13, "exposure": 5, "area": (400 * np.pi)}
+    CMOS_PARAMS = {"aperture": 5, "gain": 1.13, "exposure": 10.0, "area": (400 * np.pi)}
     CCD_PARAMS = {"aperture": 4, "gain": 2.0, "exposure": 10.0, "area": (400 * np.pi)}
 
     # Extract data
     times_cmos, sky_cmos = extract_sky_background(phot_files["CMOS"], target_tic_id, **CMOS_PARAMS)
+    print(f'The length for the CMOS data is {len(times_cmos)}')
     times_ccd, sky_ccd = extract_sky_background(phot_files["CCD"], target_tic_id, **CCD_PARAMS)
-
+    print(f'The length for the CCD data is {len(times_ccd)}')
     # Plot results
     plt.figure()
 
@@ -86,15 +82,45 @@ def main():
         plt.plot(times_cmos, sky_cmos, 'bo-', label='CMOS', alpha=0.7)
 
     if times_ccd is not None:
-        plt.plot(times_ccd, sky_ccd, 'r^--', label='CCD', alpha=0.7)
+        plt.plot(times_ccd, sky_ccd, 'ro-', label='CCD', alpha=0.7)
 
     plt.xlabel('Time (days)')
     plt.ylabel(r'Sky background ($\mathdefault{e^{-}s^{-1}\,arcsec^{-2}}$)')
-    plt.legend()
     plt.grid()
-    plt.tight_layout()
     save_path = '/Users/u5500483/Downloads/'
-    plt.savefig(save_path + 'sky_vs_time_0915.pdf', dpi=300)
+    plt.savefig(save_path + 'sky_vs_time_0705.pdf', dpi=300, bbox_inches='tight')
+    plt.show()
+
+    # Binning
+    # Binning
+    binned_time_cmos, binned_sky_cmos, _ = bin_time_flux_error(times_cmos, sky_cmos, np.zeros_like(sky_cmos), 30)
+    binned_time_ccd, binned_sky_ccd, _ = bin_time_flux_error(times_ccd, sky_ccd, np.zeros_like(sky_ccd), 30)
+
+    # Ensure both binned datasets have the same length
+    min_length = min(len(binned_time_cmos), len(binned_time_ccd))
+
+    # Interpolate to match the shorter dataset length
+    if len(binned_time_cmos) > min_length:
+        interp_func_cmos = interp1d(binned_time_cmos, binned_sky_cmos, kind='linear', fill_value="extrapolate")
+        binned_time_cmos = np.linspace(binned_time_cmos[0], binned_time_cmos[-1], min_length)
+        binned_sky_cmos = interp_func_cmos(binned_time_cmos)
+
+    if len(binned_time_ccd) > min_length:
+        interp_func_ccd = interp1d(binned_time_ccd, binned_sky_ccd, kind='linear', fill_value="extrapolate")
+        binned_time_ccd = np.linspace(binned_time_ccd[0], binned_time_ccd[-1], min_length)
+        binned_sky_ccd = interp_func_ccd(binned_time_ccd)
+
+    print(f'Final Binned Data Length: CMOS = {len(binned_time_cmos)}, CCD = {len(binned_time_ccd)}')
+
+    # Plot binned but ratio of CMOS to CCD
+    plt.figure()
+
+    plt.plot(binned_time_cmos, binned_sky_cmos / binned_sky_ccd, 'o-', color='purple', label='CMOS/CCD', alpha=0.7)
+
+    plt.xlabel('Time (days)')
+    plt.ylabel('CMOS/CCD Sky background ratio')
+    plt.grid()
+    plt.savefig(save_path + 'sky_ratio_vs_time_0705.pdf', dpi=300, bbox_inches='tight')
     plt.show()
 
 
