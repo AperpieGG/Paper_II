@@ -18,9 +18,9 @@ def load_json(file_path):
 
 def main():
     # Load the JSON data
-    path = '/Users/u5500483/Downloads/WASP-18/'
-    cmos_file = path + '20240915_CMOS/flux_vs_temperature_CMOS_0915.json'
-    ccd_file = path + '20240915_CCD/action383446_observeField/flux_vs_temperature_CCD_0915.json'
+    path = '/Users/u5500483/Documents/GitHub/Paper_II/files/'
+    cmos_file = path + 'flux_vs_temperature_CMOS_0705.json'
+    ccd_file = path + 'flux_vs_temperature_CCD_0705.json'
 
     cmos_file_sky = 'files/sky_flux_vs_temperature_CMOS_0705'
     ccd_file_sky = 'files/sky_flux_vs_temperature_CCD_0705.json'
@@ -90,10 +90,10 @@ def main():
     # Plotting
     print("Creating the plot...")
     plt.figure()
-
+    plt.grid(True, zorder=0)
     # Scatter plot with temperatures and flux ratios
     scatter = plt.scatter(
-        temperatures, flux_ratios, c=tmags, cmap='hot_r', edgecolor='k', alpha=1)
+        temperatures, flux_ratios, c=tmags, cmap='hot_r', edgecolor='k', alpha=1, zorder=3)
 
     # # Add the polynomial fit
     # plt.plot(
@@ -109,11 +109,10 @@ def main():
     # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    # plt.ylim(0.8, 1.6)
-    plt.ylim(0.51, 1.75)
+    plt.ylim(0.55, 1.75)
     plt.tight_layout()
     save_path = '/Users/u5500483/Downloads/'
-    plt.savefig(save_path + 'ratio_flux_0915.pdf', dpi=300)
+    plt.savefig(save_path + 'ratio_flux_0705.pdf', dpi=300)
     plt.show()
 
 
