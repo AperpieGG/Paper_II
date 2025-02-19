@@ -30,14 +30,14 @@ def propagate_ratio_error(Rb_to_Rstar, Rb_err_low, Rb_err_high, a_to_Rstar, a_er
 
 
 # Given values
-Rb_to_Rstar = 0.1018  # Rb / R_star
-Rb_to_Rstar_upper_error = 0.0011  # Upper error
-Rb_to_Rstar_lower_error = -0.0011  # Lower error
+Rb_to_Rstar = 0.08173  # Rb / R_star
+Rb_to_Rstar_upper_error = 0.00006  # Upper error
+Rb_to_Rstar_lower_error = 0.00006  # Lower error
 
 # Given values for a / R_*
-a_to_Rstar = 3.48
-a_to_Rstar_upper_error = 0.16  # Upper error
-a_to_Rstar_lower_error = -0.17  # Lower error
+a_to_Rstar = 6.920
+a_to_Rstar_upper_error = 0.107  # Upper error
+a_to_Rstar_lower_error = -0.104  # Lower error
 
 # Calculate the ratio and its errors
 ratio, ratio_err_low, ratio_err_high = propagate_ratio_error(
@@ -46,9 +46,9 @@ ratio, ratio_err_low, ratio_err_high = propagate_ratio_error(
 )
 
 # Calculate cosine of the angle
-angle_in_degrees = 83.5
-upper_error = 2
-lower_error = -1.6
+angle_in_degrees = 88.70
+upper_error = 0.9
+lower_error = -0.9
 cosine_value = math.cos(math.radians(angle_in_degrees))
 # Calculate upper and lower errors for cos(i)
 cosine_upper_error = math.cos(math.radians(angle_in_degrees - upper_error)) - cosine_value
