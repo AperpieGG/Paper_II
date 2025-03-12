@@ -19,8 +19,8 @@ def load_json(file_path):
 def main():
     # Load the JSON data
     path = '/Users/u5500483/Documents/GitHub/Paper_II/files/'
-    cmos_file = path + 'flux_vs_temperature_CMOS_0705.json'
-    ccd_file = path + 'flux_vs_temperature_CCD_0705.json'
+    cmos_file = '/Users/u5500483/Downloads/flux_vs_temperature_CMOS_0705.json'
+    ccd_file = '/Users/u5500483/Downloads/flux_vs_temperature_CCD_0705.json'
 
     cmos_file_sky = 'files/sky_flux_vs_temperature_CMOS_0705'
     ccd_file_sky = 'files/sky_flux_vs_temperature_CCD_0705.json'
@@ -54,14 +54,14 @@ def main():
 
             # Calculate the flux ratio
             cmos_flux = cmos_entry["Converted_Flux"]
-            ccd_flux = ccd_entry["Converted_Flux"]
+            ccd_flux = ccd_entry["Converted_Flux"] * 0.76
             flux_ratio = cmos_flux / ccd_flux
 
             # Append the data
             temperatures.append(cmos_entry["Teff"])
             flux_ratios.append(flux_ratio)
             tmags.append(cmos_entry["Tmag"])  # Use Tmag from CMOS (assuming consistent)
-            colors.append(cmos_entry["COLOR"])
+            colors.append(cmos_entry["Color"])
 
     # Convert to numpy arrays for easier handling
     temperatures = np.array(temperatures)
@@ -70,15 +70,15 @@ def main():
     colors = np.array(colors)
 
     # Perform sigma clipping
-    # for i in range(3):  # Perform 3 iterations of sigma clipping
-    #     clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
-    #     temperatures = temperatures[~clipped_indices]
-    #     flux_ratios = flux_ratios[~clipped_indices]
-    #     tmags = tmags[~clipped_indices]
-    #     colors = colors[~clipped_indices]
+    for i in range(3):  # Perform 3 iterations of sigma clipping
+        clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
+        temperatures = temperatures[~clipped_indices]
+        flux_ratios = flux_ratios[~clipped_indices]
+        tmags = tmags[~clipped_indices]
+        colors = colors[~clipped_indices]
 
     # Fit a degree-4 polynomial
-    polynomial_coeffs = np.polyfit(temperatures, flux_ratios, 4)
+    polynomial_coeffs = np.polyfit(temperatures, flux_ratios, 1)
     polynomial_fit = np.poly1d(polynomial_coeffs)
     fitted_values = polynomial_fit(temperatures)
 
@@ -96,20 +96,21 @@ def main():
         temperatures, flux_ratios, c=tmags, cmap='hot_r', edgecolor='k', alpha=1, zorder=3)
 
     # # Add the polynomial fit
-    # plt.plot(
-    #     np.sort(temperatures),
-    #     polynomial_fit(np.sort(temperatures)),
-    #     color='black',
-    #     linestyle='--',
-    #     label='Polynomial Fit (Degree 4)'
-    # )
+    plt.plot(
+        np.sort(temperatures),
+        polynomial_fit(np.sort(temperatures)),
+        color='blue',
+        linestyle='--',
+        label='Polynomial Fit (Degree 4)'
+    )
 
     # Add colorbar
     cbar = plt.colorbar(scatter, label='TESS Magnitude')
     # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    plt.ylim(0.55, 1.75)
+    # plt.ylim(0.98, 1.4)
+    plt.xticks([4000, 4500, 5000, 5500, 6000, 6500])
     plt.tight_layout()
     save_path = '/Users/u5500483/Downloads/'
     plt.savefig(save_path + 'ratio_flux_0705.pdf', dpi=300)
