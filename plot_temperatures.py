@@ -69,6 +69,13 @@ def main():
     tmags = np.array(tmags)
     colors = np.array(colors)
 
+    # # find stars with color < .8 and also their temperature
+    # mask = colors < .8
+    # temperatures_new = temperatures[mask]
+    #
+    # plt.hist(temperatures_new, bins='auto')
+    # plt.show()
+
     # Perform sigma clipping
     for i in range(3):  # Perform 3 iterations of sigma clipping
         clipped_indices = sigma_clip(flux_ratios, sigma=3, cenfunc='mean', stdfunc='std').mask
@@ -109,7 +116,7 @@ def main():
     # cbar.set_label('$\mathdefault{G_{BP}-G_{RP}}$')
     plt.xlabel('Teff (K)')
     plt.ylabel('CMOS/CCD Flux Ratio')
-    # plt.ylim(0.98, 1.4)
+    plt.ylim(1, 1.4)
     plt.xticks([4000, 4500, 5000, 5500, 6000, 6500])
     plt.tight_layout()
     save_path = '/Users/u5500483/Downloads/'
