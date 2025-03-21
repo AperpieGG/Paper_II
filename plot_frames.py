@@ -12,14 +12,14 @@ plot_images()
 
 
 # Define functions
-def read_image(filename, subtract_value, multiply_value):
+def read_image(filename, subtract_value, multiply_value, micron):
     """
     Read and preprocess an image from a FITS file.
     """
     with fits.open(filename) as hdul:
         image = hdul[0].data.astype(float)
         print(f'Mean pixel value: {np.mean(image)}')
-        preprocessed_image = ((image - subtract_value) * multiply_value) / 10
+        preprocessed_image = ((image - subtract_value) * multiply_value) / 10 / (micron**2)
         print(f'Preprocessed mean pixel value: {np.mean(preprocessed_image)}')
     return preprocessed_image
 
@@ -92,12 +92,13 @@ if __name__ == "__main__":
     cmos_file = path + "NG1858-4651_TIC-269217040_811_S43-20240801232406275.fits"
 
     # Preprocess images
-    ccd_image = read_image(ccd_file, subtract_value=1586, multiply_value=2)
-    cmos_image = read_image(cmos_file, subtract_value=150, multiply_value=1.13)
-
+    ccd_image = read_image(ccd_file, subtract_value=1586, multiply_value=2, micron=5.01)
+    cmos_image = read_image(cmos_file, subtract_value=150, multiply_value=1.13, micron=4.01)
+    print(f'Averge pixel value of CCD image: {np.median(ccd_image)}')
+    print(f'Averge pixel value of CMOS image: {np.median(cmos_image)}')
     # Positions for the stars
     x_cmos, y_cmos, x_ccd, y_ccd = find_position()
-    norm = LogNorm(vmin=np.min(cmos_image), vmax=2000)
+    norm = LogNorm(vmin=np.min(cmos_image), vmax=100)
 
     # Plot images side by side
     fig, axs = plt.subplots(1, 2, figsize=(8, 3.6))
@@ -110,10 +111,10 @@ if __name__ == "__main__":
 
     # Create colorbar matching the size of the images
     cbar = fig.colorbar(im_cmos, ax=axs.ravel().tolist(), orientation='vertical', fraction=0.021, pad=0.04)
-    cbar.set_label("Pixel value (e$^-$/s)")
+    cbar.set_label("Pixel value ($\mathdefault{e^{-}s^{-1}\,arcsec^{-2}}$)")
 
     # Customizing the colorbar labels in ke/s
-    cbar.set_label("Pixel value (e$^-$/s)")
+    cbar.set_label("Pixel value ($\mathdefault{e^{-}s^{-1}\,arcsec^{-2}}$)")
     # cbar.set_ticks([1, 2, 4, 5, 10, 20, 50, 100])
     # cbar.ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{int(x)}"))
     plt.savefig(path + 'CMOS_CCD_Frames.pdf', dpi=300)
