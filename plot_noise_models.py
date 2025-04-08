@@ -43,7 +43,7 @@ def plot_noise_model(ax, data, label, no_moon_label=None, full_moon_label=None):
     # Filter out stars with missing color information
     total_mags, total_RMS, total_colors = [], [], []
     for i in range(len(Tmag_list)):
-        if color_list[i] is not None:  # Include only stars with color information
+        if color_list[i] is not None:  # is not None and color_list[i] > 1.4
             total_mags.append(Tmag_list[i])
             total_RMS.append(RMS_list[i])
             total_colors.append(color_list[i])
