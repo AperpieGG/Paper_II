@@ -53,7 +53,7 @@ gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1])
 
 # First subplot: Quantum Efficiency of sCMOS and CCD
 ax0 = fig.add_subplot(gs[0])
-ax0.plot(wv_cmos, qe_cmos, label="sCMOS", color="blue")
+ax0.plot(wv_cmos, qe_cmos, label="CMOS", color="blue")
 ax0.plot(wv_ccd, qe_ccd, label="CCD", color="red", linestyle="--")
 ax0.fill_between(wv_ngts, 0, 100, where=(ngts_tra > 90), color="grey", alpha=0.5)
 
@@ -61,7 +61,7 @@ ax0.set_ylabel("Quantum Efficiency %")
 ax0.set_xlim(400, 1000)
 ax0.set_ylim(0, 100)
 ax0.grid(True)
-ax0.legend(loc='upper center', bbox_to_anchor=(0.5, 1.12), ncol=5, frameon=False, fontsize=16)
+ax0.legend(loc='upper center', bbox_to_anchor=(0.5, 1.13), ncol=5, frameon=False, fontsize=16)
 # Second subplot: QE Ratio CMOS/CCD
 ax1 = fig.add_subplot(gs[1], sharex=ax0)
 ax1.plot(wv_cmos[qe_ratio >= 1], qe_ratio[qe_ratio >= 1], color="blue")
