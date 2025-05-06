@@ -111,7 +111,7 @@ def main():
         scatter = plot_noise_model(ax, data_list[i], labels[i], no_moon_label, full_moon_label)
 
         if i in [0, 2]:  # Set the shared y-axis label only on the first column
-            ax.set_ylabel('RMS (ppm)')
+            ax.set_ylabel('RMS per 10 seconds (ppm)')
         if i in [2, 3]:  # Set the shared x-axis label only on the last row
             ax.set_xlabel('TESS Magnitude')
         scatters.append(scatter)
