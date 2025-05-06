@@ -56,7 +56,7 @@ def plot_noise_model(data):
 
     plt.figure()
     plt.scatter(good_mags, good_rms, color='black', label='Good Stars')
-    plt.scatter(bad_mags, bad_rms, color='red', label='Bad Stars')
+    plt.scatter(bad_mags, bad_rms, marker='s', color='red', label='Bad Stars')
     plt.xlabel('TESS Magnitude')
     plt.ylabel('RMS (ppm)')
     plt.yscale('log')
