@@ -50,9 +50,9 @@ def find_position():
     return x_cmos, y_cmos, x_ccd, y_ccd
 
 
-def plot_image(ax, image_data, x, y, title, aperture, radius=15.5, origin_setting='lower', show_compass=False):
+def plot_image(ax, image_data, x, y, title, aperture, radius=25.5, origin_setting='lower', show_compass=False, pixel_scale=None):
     """
-    Plot an image with specified parameters and overlay aperture and annulus.
+    Plot an image with specified parameters and overlay aperture, annulus, and scale bar.
     """
     # Define cropping limits
     x_min = max(int(x - radius), 0)
@@ -63,25 +63,38 @@ def plot_image(ax, image_data, x, y, title, aperture, radius=15.5, origin_settin
     # Crop the image
     cropped_image_data = image_data[y_min:y_max, x_min:x_max]
 
-    # Plot the image with logarithmic scaling
+    # Plot the image
     extent = [x - radius, x + radius, y - radius, y + radius]
     im = ax.imshow(cropped_image_data, cmap='viridis', origin=origin_setting, extent=extent, norm=norm)
 
     ax.set_title(title)
     ax.set_xlabel('X Pixel')
-
-    if title != "CMOS Frame":  # Show Y-label only for the first image
+    if title != "CMOS Frame":
         ax.set_ylabel('Y Pixel')
 
     # Plot aperture
     circle = Circle((x, y), radius=aperture, edgecolor='lime', facecolor='none', lw=1)
     ax.add_patch(circle)
 
-    # Add compass for the second image
+    annulus = Circle((x, y), radius=15, edgecolor='lime', facecolor='none', lw=1, linestyle='dashed')
+    dannulus = Circle((x, y), radius=20, edgecolor='lime', facecolor='none', lw=1, linestyle='dashed')
+    ax.add_patch(annulus)
+    ax.add_patch(dannulus)
+
+    # Add compass
     if show_compass:
         add_compass(ax, x + radius - 2, y - radius + 2)
 
-    return im
+    # Add scale bar (1 arcminute)
+    if pixel_scale:
+        arcmin_pixels = 60 / pixel_scale  # 60 arcsec in 1 arcminute
+        bar_length = arcmin_pixels
+        bar_x = x - radius + 2
+        bar_y = y - radius + 2
+        ax.plot([bar_x, bar_x + bar_length], [bar_y, bar_y], color='white', lw=3)
+        ax.text(bar_x + bar_length / 2, bar_y + 0.5, r"1$'$", color='white', ha='center', va='bottom', fontsize=14)
+
+        return im
 
 
 # Main Execution
@@ -104,11 +117,12 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(1, 2, figsize=(8, 3.6))
 
     # Plot CCD image with origin='upper'
-    im_ccd = plot_image(axs[0], ccd_image, x_ccd, y_ccd, aperture=4,  title="CCD Frame", origin_setting='upper', show_compass=True)
+    im_ccd = plot_image(axs[0], ccd_image, x_ccd, y_ccd, aperture=4,  title="CCD Frame",
+                        origin_setting='upper', show_compass=True, pixel_scale=5.01)
 
-    # Plot CMOS image with origin='lower' and hide its Y-label
-    im_cmos = plot_image(axs[1], cmos_image, x_cmos, y_cmos, aperture=5, title="CMOS Frame", origin_setting='lower', show_compass=True)
-
+    # Plot CMOS image
+    im_cmos = plot_image(axs[1], cmos_image, x_cmos, y_cmos, aperture=5, title="CMOS Frame",
+                         origin_setting='lower', show_compass=True, pixel_scale=4.01)
     # Create colorbar matching the size of the images
     cbar = fig.colorbar(im_cmos, ax=axs.ravel().tolist(), orientation='vertical', fraction=0.021, pad=0.04)
     cbar.set_label("Pixel value ($\mathdefault{e^{-}s^{-1}\,arcsec^{-2}}$)")
