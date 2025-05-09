@@ -34,11 +34,12 @@ def extract_data(file_path):
 
 def main():
     # File paths
+    path = '/Users/u5500483/Downloads/'
     file_paths = [
-        'files/rms_vs_time_0705_10-11.json',
-        'files/rms_vs_time_0705_11-12.json',
-        'files/rms_vs_time_0705_12-13.json',
-        'files/rms_vs_time_0705_13-14.json',
+        path + 'rms_vs_time_0705_10-11.json',
+        path + 'rms_vs_time_0705_11-12.json',
+        path + 'rms_vs_time_0705_12-13.json',
+        path + 'rms_vs_time_0705_13-14.json',
     ]
     labels = [r"$\mathdefault{10<\mathdefault{T}<11}$", r"$\mathdefault{11<\mathdefault{T}<12}$",
               r"$\mathdefault{12<\mathdefault{T}<13}$", r"$\mathdefault{13<\mathdefault{T}<14}$"]
@@ -68,7 +69,7 @@ def main():
         axes[i].set_xscale('log')
         axes[i].set_yscale('log')
 
-        axes[i].set_xlabel('Exposure Time (s)')
+        axes[i].set_xlabel('Elapsed Time (s)')
         if i == 0:
             axes[i].set_ylabel('RMS (ppm)')
 
@@ -78,6 +79,7 @@ def main():
         axes[i].tick_params(axis='y', which='minor', length=4)
 
     # Save and show the plot
+    plt.ylim(350, 70000)
     plt.savefig('RMS_vs_Time.pdf', dpi=300)
     plt.show()
 
