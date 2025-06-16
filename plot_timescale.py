@@ -50,13 +50,13 @@ def main():
     for i, file_path in enumerate(file_paths):
         times_CMOS, avg_rms_CMOS, RMS_model_CMOS, times_CCD, avg_rms_CCD, RMS_model_CCD = extract_data(file_path)
 
-        # Plot for CMOS
-        axes[i].plot(times_CMOS, avg_rms_CMOS, 'o', color='cornflowerblue', label='CMOS Data')
-        axes[i].plot(times_CMOS, RMS_model_CMOS, '--', color='blue', label='CMOS Model')
-
         # Plot for CCD
-        axes[i].plot(times_CCD, avg_rms_CCD, 'o', color='lightcoral', label='CCD Data')
-        axes[i].plot(times_CCD, RMS_model_CCD, '--', color='red', label='CCD Model')
+        axes[i].plot(times_CCD, avg_rms_CCD, 'o', color='lightcoral', label='CCD Data', alpha=0.5)
+        axes[i].plot(times_CCD, RMS_model_CCD, '--', color='red', label='CCD Model', linewidth=2)
+
+        # Plot for CMOS
+        axes[i].plot(times_CMOS, avg_rms_CMOS, 'o', color='cornflowerblue', label='CMOS Data', alpha=0.5)
+        axes[i].plot(times_CMOS, RMS_model_CMOS, '--', color='blue', label='CMOS Model', linewidth=2)
 
         # Add a text box in the top right corner
         axes[i].text(
